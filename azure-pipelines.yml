@@ -20,5 +20,8 @@ steps:
   displayName: 'Building website & documentation'
 
 - script: |
-    rsync -rciv --rsh=ssh /home/mazze/projects/aros-src/bin/documentation/www/ marust,aros@web.sourceforge.net:/home/project-web/aros/htdocs/
-  displayName: 'Run a multi-line script'
+    sshpass -p "$(MAPPED_PASS)" rsync -rciv --rsh=ssh /home/mazze/projects/aros-src/bin/documentation/www/ $(MAPPED_USER),aros@web.sourceforge.net:/home/project-web/aros/htdocs/
+  env:
+    MAPPED_USER: $(RSYNC_USER)
+    MAPPED_PASS: $(RSYNC_PASSWORD)
+  displayName: 'Deploying website'
