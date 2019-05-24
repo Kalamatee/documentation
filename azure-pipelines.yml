@@ -43,7 +43,7 @@ steps:
 #  displayName: 'Building documentation'
 
 - script: |
-    ls -l $(AROSDOCBUILDDIR)/bin/documentation/www/
+    ls -l $(AZBUILDPATH)/bin/documentation/www/
 #    sshpass -p "$(MAPPED_PASS)" rsync -rciv --rsh=ssh $(AROSDOCBUILDDIR)/bin/documentation/www/ $(MAPPED_USER),aros@web.sourceforge.net:/home/project-web/aros/htdocs/
   env:
     MAPPED_USER: $(RSYNC_USER)
