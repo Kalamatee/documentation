@@ -1,0 +1,24 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: |
+    sudo apt-key adv --keyserver packages.microsoft.com --recv-keys B02C46DF417A0893
+    sudo pip install --upgrade pip
+    sudo pip install Pillow
+  displayName: 'Installing AROS build dependencies'
+
+- script: ./build
+  displayName: 'Building website & documentation'
+
+- script: |
+    rsync -rciv --rsh=ssh /home/mazze/projects/aros-src/bin/documentation/www/ marust,aros@web.sourceforge.net:/home/project-web/aros/htdocs/
+  displayName: 'Run a multi-line script'
