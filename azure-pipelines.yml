@@ -10,7 +10,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-    AROSDOCBUILDDIR:  '$(AZBUILDPATH)/www' # Location builds are done in
+    AROSDOCBUILDDIR:  '$(AZBUILDPATH)/Documentation' # Location builds are done in
     AZBUILDPATH: '$(Build.BinariesDirectory)' # workspace path
     AROSDOCSRCDIR: '$(system.defaultWorkingDirectory)' # Path to the source code
 
@@ -24,15 +24,21 @@ steps:
 - script: |
     mkdir -p '$(AROSDOCBUILDDIR)'
     echo '##vso[task.prependpath]$(AROSDOCBUILDDIR)'
+    echo 'Copying sources...'
+    cp -R $(AROSDOCSRCDIR)/* $(AROSDOCBUILDDIR)/
   displayName: 'Setup workspace'
 
 - script: |
-    ls -l
-    echo 'Performing build...'
-    $(AROSDOCSRCDIR)/build
-    ls -l
+    echo 'Calling build www...'
+    ./build www
+  workingDirectory: '$(AROSDOCBUILDDIR)'
+  displayName: 'Building website'
+
+#- script: |
+#    echo 'Calling build html...'
+#    ./build html
 #  workingDirectory: '$(AROSDOCBUILDDIR)'
-  displayName: 'Building website & documentation'
+#  displayName: 'Building website & documentation'
 
 #- script: |
 #    sshpass -p "$(MAPPED_PASS)" rsync -rciv --rsh=ssh $(AROSDOCBUILDDIR)/bin/documentation/www/ $(MAPPED_USER),aros@web.sourceforge.net:/home/project-web/aros/htdocs/
