@@ -29,6 +29,7 @@ steps:
     mkdir -p '~/.ssh'
     mkdir -p '$(AROSWEBBUILDDIR)'
     mkdir -p '$(AROSWEBSRCBUILDDIR)'
+    echo '##vso[task.prependpath]~/.ssh'
     echo '##vso[task.prependpath]$(AROSWEBBUILDDIR)'
     echo '##vso[task.prependpath]$(AROSWEBSRCBUILDDIR)'
     echo 'Copying sources...'
