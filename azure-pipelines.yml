@@ -1,7 +1,4 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# Build & Deploy the AROS website
 
 trigger:
 - master
@@ -38,7 +35,7 @@ steps:
 #    echo 'Calling build html...'
 #    ./build html
 #  workingDirectory: '$(AROSDOCBUILDDIR)'
-#  displayName: 'Building website & documentation'
+#  displayName: 'Building documentation'
 
 #- script: |
 #    sshpass -p "$(MAPPED_PASS)" rsync -rciv --rsh=ssh $(AROSDOCBUILDDIR)/bin/documentation/www/ $(MAPPED_USER),aros@web.sourceforge.net:/home/project-web/aros/htdocs/
