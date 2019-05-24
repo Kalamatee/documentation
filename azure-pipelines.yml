@@ -27,9 +27,11 @@ steps:
   displayName: 'Setup workspace'
 
 - script: |
+    ls -l
+    echo 'Performing build...'
     $(AROSDOCSRCDIR)/build
     ls -l
-  workingDirectory: '$(AROSDOCBUILDDIR)'
+#  workingDirectory: '$(AROSDOCBUILDDIR)'
   displayName: 'Building website & documentation'
 
 #- script: |
