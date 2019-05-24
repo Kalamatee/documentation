@@ -1,4 +1,8 @@
 # Build & Deploy the AROS website
+# to use, you must define the following secret variables
+# in the pipeline settings-:
+#    RSYNC_USER - sourceforge user ti upload as
+#    RSYNC_PASSWORD - ...
 
 trigger:
 - master
