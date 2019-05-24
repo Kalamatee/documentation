@@ -1,8 +1,8 @@
 # Build & Deploy the AROS website
 # to use, you must define the following secret variables
 # in the pipeline settings-:
-#    RSYNC_USER - sourceforge user ti upload as
-#    RSYNC_PASSWORD - ...
+#    SF_RSYNC_USER - sourceforge user ti upload as
+#    SF_RSYNC_PASSWORD - ...
 
 trigger:
 - master
@@ -15,8 +15,8 @@ variables:
     AROSWEBBUILDDIR:  '$(AZBUILDPATH)/web' # Location builds are done in
     AZBUILDPATH: '$(Build.BinariesDirectory)' # workspace path
     AROSDOCSRCDIR: '$(system.defaultWorkingDirectory)' # Path to the source code
-    MAPPED_USER: $(RSYNC_USER)
-    MAPPED_PASS: $(RSYNC_PASSWORD)
+    MAPPED_USER: '$(SF_RSYNC_USER)'
+    MAPPED_PASS: '$(SF_RSYNC_PASSWORD)'
 
 steps:
 - script: |
