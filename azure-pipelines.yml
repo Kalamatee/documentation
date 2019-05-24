@@ -33,7 +33,7 @@ steps:
   displayName: 'Building website & documentation'
 
 #- script: |
-#    sshpass -p "$(MAPPED_PASS)" rsync -rciv --rsh=ssh /home/mazze/projects/aros-src/bin/documentation/www/ $(MAPPED_USER),aros@web.sourceforge.net:/home/project-web/aros/htdocs/
+#    sshpass -p "$(MAPPED_PASS)" rsync -rciv --rsh=ssh $(AROSDOCBUILDDIR)/bin/documentation/www/ $(MAPPED_USER),aros@web.sourceforge.net:/home/project-web/aros/htdocs/
 #  env:
 #    MAPPED_USER: $(RSYNC_USER)
 #    MAPPED_PASS: $(RSYNC_PASSWORD)
