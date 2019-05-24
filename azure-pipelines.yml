@@ -47,6 +47,7 @@ steps:
 #  displayName: 'Building documentation'
 
 - script: |
+    ssh-keygen -R web.sourceforge.net
     sshpass -p "%MAPPED_PASS%" rsync -rciv --rsh=ssh $(AROSWEBBUILDDIR)/bin/documentation/www/ %MAPPED_USER%,aros@web.sourceforge.net:/home/project-web/aros/htdocs/
   env:
     MAPPED_USER: $(SF_RSYNC_USER)
