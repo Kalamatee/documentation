@@ -15,8 +15,6 @@ variables:
     AROSWEBBUILDDIR:  '$(AZBUILDPATH)/web' # Location builds are done in
     AZBUILDPATH: '$(Build.BinariesDirectory)' # workspace path
     AROSDOCSRCDIR: '$(system.defaultWorkingDirectory)' # Path to the source code
-    MAPPED_USER: '$(SF_RSYNC_USER)'
-    MAPPED_PASS: '$(SF_RSYNC_PASSWORD)'
 
 steps:
 - script: |
@@ -49,5 +47,8 @@ steps:
 #  displayName: 'Building documentation'
 
 - script: |
-    sshpass -p "$(MAPPED_PASS)" rsync -rciv --rsh=ssh $(AROSWEBBUILDDIR)/bin/documentation/www/ $(MAPPED_USER),aros@web.sourceforge.net:/home/project-web/aros/htdocs/
+    sshpass -p "%MAPPED_PASS%" rsync -rciv --rsh=ssh $(AROSWEBBUILDDIR)/bin/documentation/www/ %MAPPED_USER%,aros@web.sourceforge.net:/home/project-web/aros/htdocs/
+  env:
+    MAPPED_USER: $(SF_RSYNC_USER)
+    MAPPED_PASS: $(SF_RSYNC_PASSWORD)
   displayName: 'Deploying website'
