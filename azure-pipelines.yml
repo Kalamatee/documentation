@@ -9,6 +9,11 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+    AROSDOCBUILDDIR:  '$(AZBUILDPATH)/www' # Location builds are done in
+    AZBUILDPATH: '$(Build.BinariesDirectory)' # workspace path
+    AROSDOCSRCDIR: '$(system.defaultWorkingDirectory)' # Path to the source code
+
 steps:
 - script: |
     sudo apt-key adv --keyserver packages.microsoft.com --recv-keys B02C46DF417A0893
@@ -16,12 +21,20 @@ steps:
     sudo pip install Pillow
   displayName: 'Installing AROS build dependencies'
 
-- script: ./build
-  displayName: 'Building website & documentation'
+  - script: |
+      mkdir -p '$(AROSDOCBUILDDIR)'
+      echo '##vso[task.prependpath]$(AROSDOCBUILDDIR)'
+    displayName: 'Setup workspace'
 
 - script: |
-    sshpass -p "$(MAPPED_PASS)" rsync -rciv --rsh=ssh /home/mazze/projects/aros-src/bin/documentation/www/ $(MAPPED_USER),aros@web.sourceforge.net:/home/project-web/aros/htdocs/
-  env:
-    MAPPED_USER: $(RSYNC_USER)
-    MAPPED_PASS: $(RSYNC_PASSWORD)
-  displayName: 'Deploying website'
+    $(AROSDOCSRCDIR)/build
+    ls -l
+  workingDirectory: '$(AROSDOCBUILDDIR)'
+  displayName: 'Building website & documentation'
+
+#- script: |
+#    sshpass -p "$(MAPPED_PASS)" rsync -rciv --rsh=ssh /home/mazze/projects/aros-src/bin/documentation/www/ $(MAPPED_USER),aros@web.sourceforge.net:/home/project-web/aros/htdocs/
+#  env:
+#    MAPPED_USER: $(RSYNC_USER)
+#    MAPPED_PASS: $(RSYNC_PASSWORD)
+#  displayName: 'Deploying website'
