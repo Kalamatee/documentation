@@ -21,10 +21,10 @@ steps:
     sudo pip install Pillow
   displayName: 'Installing AROS build dependencies'
 
-  - script: |
-      mkdir -p '$(AROSDOCBUILDDIR)'
-      echo '##vso[task.prependpath]$(AROSDOCBUILDDIR)'
-    displayName: 'Setup workspace'
+- script: |
+    mkdir -p '$(AROSDOCBUILDDIR)'
+    echo '##vso[task.prependpath]$(AROSDOCBUILDDIR)'
+  displayName: 'Setup workspace'
 
 - script: |
     $(AROSDOCSRCDIR)/build
