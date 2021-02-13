@@ -1,0 +1,56 @@
+# Build & Deploy the AROS website
+# to use, you must define the following secret variables
+# in the pipeline settings-:
+#    SF_RSYNC_USER - sourceforge user ti upload as
+#    SF_RSYNC_PASSWORD - ...
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+    AROSWEBSRCBUILDDIR:  '$(AROSWEBBUILDDIR)/Documentation' # Location builds are done in
+    AROSWEBBUILDDIR:  '$(AZBUILDPATH)/web' # Location builds are done in
+    AZBUILDPATH: '$(Build.BinariesDirectory)' # workspace path
+    AROSDOCSRCDIR: '$(system.defaultWorkingDirectory)' # Path to the source code
+
+steps:
+- script: |
+    sudo apt-key adv --keyserver packages.microsoft.com --recv-keys B02C46DF417A0893
+    sudo apt-get update
+    sudo apt-get install -y sshpass
+    sudo pip install --upgrade pip
+    sudo pip install Pillow
+  displayName: 'Installing AROS build dependencies'
+
+- script: |
+    mkdir -p '$(AROSWEBBUILDDIR)'
+    mkdir -p '$(AROSWEBSRCBUILDDIR)'
+    echo '##vso[task.prependpath]$(AROSWEBBUILDDIR)'
+    echo '##vso[task.prependpath]$(AROSWEBSRCBUILDDIR)'
+    echo 'Copying sources...'
+    cp -R $(AROSDOCSRCDIR)/* $(AROSWEBSRCBUILDDIR)/
+  displayName: 'Setup workspace'
+
+- script: |
+    echo 'Calling build www...'
+    ./build www
+  workingDirectory: '$(AROSWEBSRCBUILDDIR)'
+  displayName: 'Building website'
+
+#- script: |
+#    echo 'Calling build html...'
+#    ./build html
+#  workingDirectory: '$(AROSDOCBUILDDIR)'
+#  displayName: 'Building documentation'
+
+- script: |
+    mkdir -p ~/.ssh
+    ssh-keyscan -t rsa web.sourceforge.net >> ~/.ssh/known_hosts
+    sshpass -p "$MAPPED_PASS" rsync -rciv --rsh=ssh $(AROSWEBBUILDDIR)/bin/documentation/www/ $MAPPED_USER,aros@web.sourceforge.net:/home/project-web/aros/htdocs/
+  env:
+    MAPPED_USER: $(SF_RSYNC_USER)
+    MAPPED_PASS: $(SF_RSYNC_PASSWORD)
+  displayName: 'Deploying website'
