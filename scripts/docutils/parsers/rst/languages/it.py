@@ -1,7 +1,6 @@
-# Author: Nicola Larosa, Lele Gaifax
-# Contact: docutils@tekNico.net, lele@seldati.it
-# Revision: $Revision$
-# Date: $Date$
+# $Id: it.py 9417 2023-06-27 20:04:54Z milde $
+# Authors: Nicola Larosa <docutils@tekNico.net>;
+#          Lele Gaifax <lele@seldati.it>
 # Copyright: This module has been placed in the public domain.
 
 # Beware: the italian translation of the reStructuredText documentation
@@ -20,6 +19,7 @@ __docformat__ = 'reStructuredText'
 directives = {
       'attenzione': 'attention',
       'cautela': 'caution',
+      'code (translation required)': 'code',
       'pericolo': 'danger',
       'errore': 'error',
       'suggerimento': 'hint',
@@ -27,7 +27,8 @@ directives = {
       'nota': 'note',
       'consiglio': 'tip',
       'avvertenza': 'warning',
-      'ammonizione': 'admonition',
+      'avviso': 'admonition',
+      'ammonizione': 'admonition',  # sic! kept for backards compatibility
       'riquadro': 'sidebar',
       'argomento': 'topic',
       'blocco-di-righe': 'line-block',
@@ -37,15 +38,16 @@ directives = {
       'punti-salienti': 'highlights',
       'estratto-evidenziato': 'pull-quote',
       'composito': 'compound',
-      u'container (translation required)': 'container',
-      #'questions': 'questions',
-      #'qa': 'questions',
-      #'faq': 'questions',
+      'container (translation required)': 'container',
+      # 'questions': 'questions',
+      # 'qa': 'questions',
+      # 'faq': 'questions',
       'tabella': 'table',
       'tabella-csv': 'csv-table',
       'tabella-elenco': 'list-table',
       'meta': 'meta',
-      #'imagemap': 'imagemap',
+      'math (translation required)': 'math',
+      # 'imagemap': 'imagemap',
       'immagine': 'image',
       'figura': 'figure',
       'includi': 'include',
@@ -64,8 +66,8 @@ directives = {
       'annota-riferimenti-esterni': 'target-notes',
       'intestazione': 'header',
       'piede-pagina': 'footer',
-      #'footnotes': 'footnotes',
-      #'citations': 'citations',
+      # 'footnotes': 'footnotes',
+      # 'citations': 'citations',
       'restructuredtext-test-directive': 'restructuredtext-test-directive'}
 """Italian name to registered (in directives/__init__.py) directive name
 mapping."""
@@ -73,6 +75,7 @@ mapping."""
 roles = {
       'abbreviazione': 'abbreviation',
       'acronimo': 'acronym',
+      'code (translation required)': 'code',
       'indice': 'index',
       'deponente': 'subscript',
       'esponente': 'superscript',
@@ -82,6 +85,7 @@ roles = {
       'enfasi': 'emphasis',
       'forte': 'strong',
       'letterale': 'literal',
+      'math (translation required)': 'math',
       'riferimento-con-nome': 'named-reference',
       'riferimento-anonimo': 'anonymous-reference',
       'riferimento-nota': 'footnote-reference',
@@ -89,6 +93,7 @@ roles = {
       'riferimento-sostituzione': 'substitution-reference',
       'destinazione': 'target',
       'riferimento-uri': 'uri-reference',
-      'grezzo': 'raw',}
+      'grezzo': 'raw',
+      }
 """Mapping of Italian role names to canonical role names for interpreted text.
 """

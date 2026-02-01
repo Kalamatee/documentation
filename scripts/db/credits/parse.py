@@ -1,5 +1,4 @@
-# -*- coding: iso-8859-1 -*-
-# Copyright © 2002, The AROS Development Team. All rights reserved.
+# Copyright (C) 2002, The AROS Development Team. All rights reserved.
 # $Id$
 
 """
@@ -58,15 +57,15 @@ def parse( file ):
         line = line.strip()
 
         if ':' in line:
-	    if len( names ) > 0:
-	        credits.append( [ area, names ] )
+            if len( names ) > 0:
+                credits.append( [ area, names ] )
 
-	    area = line[:-1]
+            area = line[:-1]
 
-	    names = []
+            names = []
 
         elif line != '':
-	    names.append( line )
+            names.append( line )
 
     if len( names ) > 0:
         credits.append( [ area, names ] )

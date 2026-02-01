@@ -1,0 +1,76 @@
+#!/usr/bin/python
+
+import os, os.path, re, glob, stat, string, cgi
+
+print('''Content-Type: text/html\n\n''')
+
+## Parse arguments ###########################################################
+
+args = cgi.FieldStorage()
+
+if 'testpage' in args:
+    tstpage = args['testpage'].value
+else:
+    tstpage = ''
+
+activepage = ''
+unittestroot  = '/home/project-web/aros/htdocs/unittests/'
+
+## Process files #############################################################
+
+oldcwd = os.getcwd()
+
+results = []
+
+for file in os.listdir(unittestroot):
+        results.append( file )
+        if tstpage != '':
+            if tstpage == file:
+                activepage = '/unittests/' + file
+
+results.sort()
+if activepage == '':
+        activepage = '/unittests/' + results[0]
+
+## Output HTML ###############################################################
+
+print ('''
+<table style="width: 100%; Height: 100vh; text-align: justify; margin-left: auto; margin-right: auto; background: url(/images/bgcolormain.png);" border="0" cellpadding="1" cellspacing="1">
+   <tr>
+      <td>
+         <h1>Unit Test Results<br><img style="width: 238px; height: 2px;" alt="spacer" src="/images/sidespacer.png"></h1>
+      </td>
+    </tr>
+''')
+
+print ('''
+   <tr>
+      <td>
+        <select name="unittests" id="unittests" onchange="show_unittests(this.value)">
+''')
+for result in results:
+    print ('''
+            <option value="{0}">{1}</option>
+    '''.format(result,result[:-15]) )
+
+print ('''
+        </select>
+      </td>
+    </tr>
+''')
+
+print ('''
+   <tr height="100%">
+      <td>
+         <object style="float:left;height:100%;" width="100%" height="95vh" id="displayedtest" data="{}" type="text/html"></object>
+      </td>
+   </tr>
+</table>
+'''.format(activepage) )
+print ('''
+<script type="text/javascript">
+  function show_unittests(unittest) {
+    document.getElementById("displayedtest").data = "/unittests/" + unittest;
+  }
+</script>
+''')

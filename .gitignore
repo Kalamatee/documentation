@@ -2,7 +2,8 @@
 .*.swp
 
 # /
-/credits.en
+/credits.en.rst
+/.vscode
 
 # /news/
 /news/index.*
@@ -14,4 +15,12 @@
 /scripts/config/user
 
 # /targets/www/
+/targets/www/aros/template.html.*
+/targets/www/dev/template.html.*
+/targets/www/locale/template.html.*
 /targets/www/template.html.*
+
+# ignore auto generated files
+/documentation/users/applications
+/documentation/developers/autodocs
+/documentation/users/shell

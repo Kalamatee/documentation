@@ -1,26 +1,44 @@
-# -*- coding: iso-8859-1 -*-
-# Copyright © 2002, The AROS Development Team. All rights reserved.
-# $Id$
+# Copyright (C) 2002-2025, The AROS Development Team. All rights reserved.
 
-import os, sys
+import importlib.util
+import os
+import codecs
 
-from build.utility import *
+from build import utility
 
-import db.mirrors.format.html
+from configparser import ConfigParser
 
-from page import makePage
-from ConfigParser import ConfigParser
+def load_makePage(tmpltgt):
+    module_name = "page"
+    module_path = os.path.join(tmpltgt, "page.py")
 
-def makeTemplates():
+    spec = importlib.util.spec_from_file_location(module_name, module_path)
+    if spec is None:
+        raise ImportError(f"Cannot load {module_name} from {module_path}")
+
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    return module.makePage
+
+def makeTemplates(tmpltgt):
+    """
+    Creates the template files for the WWW target in all languages.
+    The templates are created in the targets/www directory.
+    The configuration files are read from the targets/www/template/languages directory.
+    """
+
     # Deduce important paths
     HERE_DIR   = os.path.split( __file__ )[0]
     LANG_DIR   = 'targets/www/template/languages'
-    DST_DIR    = 'targets/www'
-    
+    DST_DIR    = os.path.join('targets','www', tmpltgt)
+    TMPLT_TGT = os.path.join(HERE_DIR, tmpltgt)
+
     def makeTemplate( language, dst ):
         # Setup translation dictionaries
         config = ConfigParser()
-        config.read( os.path.join( LANG_DIR, language ) )
+        with codecs.open(os.path.join( LANG_DIR, language + '.txt'), 'r', encoding='utf-8') as configfile:
+            config.read_file(configfile)
 
         charset = config.get( 'meta', 'charset' )
 
@@ -36,24 +54,26 @@ def makeTemplates():
         for option in config.options( 'misc' ):
             _M[option] = config.get( 'misc', option )
         
-        file( dst, 'w' ).write( makePage( _T, _N, _M, '', language, charset ) )
+        makePage = load_makePage(TMPLT_TGT)
+        utility.makedir(os.path.dirname(dst))
+        open( dst, 'w' ).write( makePage( _T, _N, _M, language, charset ) )
 
-    for language in os.listdir( LANG_DIR ):
-        if ignore( language ): continue 
+    for langfile in os.listdir( LANG_DIR ):
+        language = langfile.split( '.' )[0] # strip '.txt'
+        if utility.ignore( language ): continue
 
         dst = os.path.join( DST_DIR, 'template.html.' + language )
        
-        if newer \
+        if utility.newer \
         ( 
             [ 
                 __file__, 
-                os.path.join( HERE_DIR, 'page.py' ),
-                os.path.join( HERE_DIR, 'components.py' ), 
-                os.path.join( LANG_DIR, language ) 
+                os.path.join( TMPLT_TGT, 'page.py' ),
+                os.path.join( LANG_DIR, langfile ) 
             ], 
             dst 
         ):
-            reportBuilding( dst )
+            utility.reportBuilding( dst )
             makeTemplate( language, dst )
         else:
-            reportSkipping( dst )
+            utility.reportSkipping( dst )

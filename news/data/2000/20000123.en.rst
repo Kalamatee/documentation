@@ -1,0 +1,13 @@
+=============
+Miscellaneous
+=============
+
+:Author: Aaron Digulla
+:Date:   2000-01-23
+
+There are two good articles about AROS on the net. The first one is
+here *(dead link removed)* (it's an interview with Aaron Digulla) and the other one is
+here *(dead link removed)* (background and some detail info on AROS). This article is a bit
+older but it's written very well (and it's also available in
+italian *(dead link removed)*).
+

@@ -1,0 +1,207 @@
+======================
+AROS Dokumentointiopas
+======================
+
+:Authors:   Adam Chodorowski 
+:Copyright: Copyright © 1995-2002, The AROS Development Team
+:Version:   $Revision$
+:Date:      $Date$
+:Status:    Work in progress.
+
+.. Warning::
+
+   Tämä dokumentti ei ole valmis! On erittäin todennäköistä että monet osat
+   ovat vanhentuneita, sisältävät epäkuranttia tietoa taikka puuttuvat
+   kokonaan. Jos tahdot korjata tilanteen, ota meihin yhteyttä.
+
+Tämä manuaali kuvailee AROS:in dokumentointijärjestelmän. Tämä on tarkoitettu
+kaikkien dokumentaation kirjoittajien luettavaksi kuten myös niiden
+kehittäjien jotka tahtovat laajentaa taikka värkkäillä järjestelmän kanssa.
+Tähän tarkoitukseen on manuaali jaettu kolmeen osaan: järjestelmän yleinen
+esittely, kuinka sitä käytetään dokumentaation kirjoittamiseen ja lopuksi
+teknisiä huomautuksia ja spesifikaatioita. Järjestelmän käyttötietojen lisäksi toinen kappale sisältää myös joitain yleisohjeita joita tulisi seurata dokumentaatiota kirjoittaessa.
+
+
+.. Contents::
+
+
+--------
+Esittely
+--------
+
+FIXME: Kirjoita ...
+
+
+------------------------
+Dokumentaation kirjoitus
+------------------------
+
+Dokumentaatio formaatti jota käytämme on nk. reStructuredText (lyhyesti ReST)
+kuten `Docutils Project`__ sen määrittelee. ReST on helposti luettavissa ja
+kirjoitettavissa, WYSIWYG, laajennettava, sekä selväkielinen
+merkintäsyntaksiltaan.
+
+Voit kuvailla sen olevan hybridin merkintäsyntaksin ehdottoman ja täsmällisen
+välimaastosta, joka tekee siitä helpon oppia sekä helposti luettavissa olevan
+ja silti olevan tehokkaan ja helpon laajentaa. `Introduction to
+reStructuredText`__ sisältää syntaksille muutamia hyviä näkökohtia ja
+päämääriä.
+
+Koska formaatti on pääasiassa selväkielistä tekstiä, on se helppo oppia
+yksinkertaisesti tutkimalla olemassa olevaa dokumentaatiota ja käyttäen
+hitusen maalaisjärkeä. Mutta siitä huolimatta on suositeltavaa käydä ainakin
+pikaisesti `ReStructuredText Primer`__ lävitse ennen kuin alat työskennellä
+AROS dokumentaation parissa.
+
+Formaatin lisätietoa varten ovat seuraavat dokumentit suositeltavaa luettavaa:
+
++ `Quick reStructuredText Reference`__
+
+__ http://docutils.sourceforge.net/
+__ http://docutils.sourceforge.net/spec/rst/introduction.html
+__ http://docutils.sourceforge.net/docs/rst/quickstart.html
+__ http://docutils.sourceforge.net/docs/rst/quickref.html
+
+------------------
+Teknisiä huomioita
+------------------
+
+Tietokannat
+===========
+
+Olemassa on useita pieniä tietokantoja, jotka kaikki löytyvät ``db``
+hakemistosta, ja jotka kaikki ovat puhtaasti tekstimuotoisia tiedostoja mutta
+jotka käyttävät paria hieman toisistaan poikkeavaa formaattia. Tämä on
+pääasiassa historiallinen artefakti joka ehkä tulisi oikaista tulevaisuudessa,
+mutta tällä hetkellä niiden on parasta antaa olla sellaisenaan.
+
+
+Koot
+----
+
+Tiedostot ``aros.size`` ja ``contrib.size`` sisältävät AROS:in pääasiallisen
+ja "contrib" lähdekoodin koot Subversion varastossa. Koot otetaan ajoittain ja
+lisätään näihin tietokantoihin, joita käytetään luomaan joitain graafeja.
+
+Jokainen rivi jakautuu kolmeen tyhjällä merkillä/merkeillä rajoitettuun
+kenttään: päiväys, koko kilotavuina ja hakemisto (tässä järjestyksessä).
+Hakemistotieto on periaattessa liiallista tietoa ja se voidaan jättää
+huomiotta.
+
+.. Note::
+
+   Koot on laskettu käyttäen UNIX:in "du" komentoa. Tämä tarkoittaa sitä että
+   ne ovat jonkin verran harhaanjohtavia koska "du" mittaa levynkäytön eikä
+   tiedostojen tarkkaa kokoa, joka taas tarkoittaa että se laskee
+   tiedostojärjestelmässä käytettyjen lohkojen määrän per tiedosto eikä
+   suinkaan sen sisältämän datan määrää. Joten jos on olemassa tiedosto joka
+   on kooltaan 66 tavua ja tiedostojärjestelmän lohkokoko on 4096 tavua,
+   ilmoittaa "du" tiedoston kooksi 4096 tavua.
+
+
+Ansiot
+------
+
+FIXME: Kirjoita ...
+
+
+Mirror
+------
+
+FIXME: Kirjoita ...
+
+
+Tehtävät
+--------
+
+FIXME: Kirjoita ...
+
+
+Koostaminen
+===========
+
+Vaatimukset
+-----------
+
+Tarvitset seuraavat koostaaksesi AROS dokumentaation alusta lähtien:
+
++ Python__ 2.2.1
+
+Koostaaksesi myös web sivuston, tarvitset yllä mainitun lisäksi:
+
++ The `Python Imaging Library`__ 1.1.3
+
+__ http://www.python.org/
+__ http://www.pythonware.com/products/pil/
+
+
+Asetusten teko
+--------------
+
+Ennen kuin voit aloittaa dokumentaation koostamisen, voi olla tarpeen tehdä
+joitain asetuksia jos tarvittavan Python tulkin nimi ei ole järjestelmässäsi
+nimetty "python":iksi. Jos se on siten nimetty, voit huoletta hypätä tämän
+osuuden ylitse.
+
+Ensinnä tee kopio perusasetuksista::
+
+    % cd AROS/documentation/scripts/config
+    % cp defaults user
+
+Sitten muokkaa ``user`` tiedostoa ja varmista että muuttujat ovat oikein
+asetetut. Esimerkkinä annettu konfiguraatio voisi näyttää tältä::
+
+    PYTHON=python
+
+``PYTHON`` kertoo Python tulkin nimen; se voi olla myöskin absoluuttinen polku
+jos sitä ei ole hakupolulla. Voi olla että joudut asettamaan sen esim.
+``python2`` tai ``python2.2`` joissain järjestelmissä.
+
+
+Kohteet
+-------
+
+Tällä hetkellä on kaksi kohdetta tuettu:
+
++ ``www`` 
+
+  Tämä kohde generoi AROS:in web sivuston joka sisältää kaiken dokumentaation,
+  uutiset, kuvagalleriat pienoiskuvineen sekä tilannetietoa. Dokumentaatio
+  integroituu näppärästi sivustoon.
+
++ ``html``
+
+  Tämä kohde generoi itsenäisen HTML-version dokumentaatiosta, sopivan
+  näytettäväksi poissa verkosta ja sisällytettäväksi dokumentaatiopaketteihin.
+
+
+Menettely
+---------
+
+Koostaaksesi määrätyn kohteen, kutsu build skriptiä kohteen nimellä (ja
+vaihtoehtoisesti kohteen kielellä jos et ole koostamassa englanninkielistä
+versiota). Työhakemiston täytyy olla build:ia kutsuttaessa dokumentaation
+juuripolun. Esimerkiksi koostaaksesi web sivuston, tee näin::
+
+    > cd AROS/documentation
+    > ./build www
+
+Jos tahdot koostaa itsenäisen HTML dokumentaation::
+
+    > cd AROS/documentation
+    > ./build html
+
+Generoidut tiedostot kirjoitetaan hakemistoon
+``../bin/documentation/<target-name>``, esim.
+``../bin/documentation/www`` kohteelle ``www``. Tämän lisäksi on olemassa
+"kohde" nimeltä ``clean`` joka poistaa koko ``../bin/documentation``
+hakemiston.
+
+.. Note::
+
+   Koostaminen tuottaa melkoisen määrän väliaikaisia tiedostoja
+   lähdehakemistoissa, joten et voi pitää niitä vain luettavissa olevalla
+   medialla. Jos olet hakenut lähdetiedostot SVN varastosta, ei sinun tarvitse
+   huolehtia väliaikaisista tiedostoista tai valmiista koosteista: ne ohitetaan
+   tarvittaessa.
+

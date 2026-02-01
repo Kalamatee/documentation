@@ -1,1 +1,0 @@
-Klikkend op één van de gadgets

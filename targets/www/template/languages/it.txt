@@ -1,0 +1,76 @@
+[meta]
+
+charset:          utf-8
+
+[titles]
+
+news:             Novità
+news-archive-for: Archivio notizie per
+mirrors:          Mirror
+contents:         Contenuti
+search:           Cerca
+visitors:         Visitatori
+sponsors:         Sponsor
+
+[navigation]
+
+home:             Home
+news:             Novità
+archive:          Archivio
+introduction:     Introduzione
+status:           Stato
+screenshots:      Foto
+ports:            Porting
+license:          Licenza
+download:         Download
+documentation:    Documentazione
+users:            Utenti
+installation:     Installazione
+using:            Come si usa
+shell:            Comandi shell
+applications:     Applications
+faq:              FAQ
+howto:            HowTo
+hwcompat:         Hardware Compatibility
+glossary:         Glossary
+translators:      Translators
+developers:       Sviluppatori
+contribute:       Per contribuire
+roadmap:          Roadmap
+issue-tracker:    Bug Tracker
+working-with-git: Lavorare con Git
+compiling:        Compilare
+application-development-manual: Manuale Sviluppo Applicazioni
+zune-application-development-manual: Manuale Sviluppo Applicazioni Zune
+system-development-manual:      Manuale Sviluppo Sistema
+debugging-manual: Manuale Debugging
+reference:        Riferimenti
+specifications:   Specifiche
+ui-style-guide:   Guida stili UI
+testing:          Testing
+documenting:      Documentazione
+porting:          Porting
+translating:      Traduzione
+summaries:        Sommari
+links:            Links
+contact:          Contatti
+slack:            Slack
+mailing-lists:    Mailing list
+forums:           Forum
+community:        Community Resources
+irc-channels:     Canali IRC
+credits:          Riconoscimenti
+acknowledgements: Acknowledgements
+pictures:         Immagini
+developers-together: Ciurma degli sviluppatori
+sponsors:         Sponsor
+linking:          Collegamenti
+
+[misc]
+
+go:               Vai
+search:           Cerca
+copyright:        Copyright © 1995-2026, The AROS Development Team. Tutti i diritti riservati.
+trademarks:       Amiga® è un marchio registrato di Amiga Inc. Tutti i diritti sui marchi vanno ai legittimi proprietari.
+read-more:        Per saperne di più...
+large-image:      Dimensioni originali...

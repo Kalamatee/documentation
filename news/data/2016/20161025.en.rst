@@ -1,0 +1,27 @@
+=========================
+September 2016 Highlights
+=========================
+
+:Author:   Krzysztof Smiechowicz
+:Date:     2016-10-25
+
+September was definitely a distro month. First, the AEROS distribution
+was refreshed by Pascal Papara and brought to version 4.2.1 on all
+supported platforms (Raspberry Pi 1/2/3 and Odroid XU3/XU4). The
+changes include integration of EmuLa, installation of the Chrome browser
+supporting Flash, SDL2 libraries, ScummVM 1.8 and the game 'Amiga Racer'.
+
+Staying on the ARM platform, September also saw the first release of an
+AROS distribution targeted at the Orange Pi platform. The distribution,
+called PiAROS, uses the hosted version of AROS, similar to AEROS.
+
+Lastly, Icaros Desktop, the x86 distribution by Paolo Besser, received
+an update and is now available in version 2.1.3. The new version brings
+updates to several applications, including Odyssey Web Browser, PortablE,
+SimpleMail and Mapparium.
+
+In core AROS development we had two activities. While Neil Cafferkey
+continued making improvements to MUI, Miloslav Martinka added Czech
+localization to a number of applications as well as implementing
+localization in Appearance preferences.
+

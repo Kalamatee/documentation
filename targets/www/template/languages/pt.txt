@@ -1,0 +1,76 @@
+[meta]
+
+charset:          utf-8
+
+[titles]
+
+news:             Novidades
+news-archive-for: News archive for
+mirrors:          Servidores espelho (Mirrors)
+contents:         Conteúdos
+search:           Procurar
+visitors:         Visitantes
+sponsors:         Patrocínios
+
+[navigation]
+
+home:             Ínicio
+news:             Novidades
+archive:          Arquivo
+introduction:     Introdução
+status:           Estado
+screenshots:      Imagens
+ports:            Portos
+license:          Licença
+download:         Descarregar
+documentation:    Documentação
+users:            Utilizadores
+installation:     Instalação
+using:            Utilizando
+shell:            Comandos de 'Shell'
+applications:     Applications
+faq:              F. A. Q.
+howto:            HowTo
+hwcompat:         Hardware Compatibility
+glossary:         Glossary
+translators:      Translators
+developers:       Desenvolvidores
+contribute:       Contribuintes
+roadmap:          Roadmap
+issue-tracker:    À procura de erros...
+working-with-git: Trabalhando com Git
+compiling:        Compilando
+application-development-manual: Manual de Desenvolvimento de Aplicações
+zune-application-development-manual: Manual de Desenvolvimento de Aplicações Zune
+system-development-manual:      Manual de Desenvolvimento do sistema
+debugging-manual: Manual de Correcção de erros
+reference:        Referência
+specifications:   Especificações
+ui-style-guide:   Guia de Estilos I. U.
+testing:          Testing
+documenting:      Documentando
+porting:          Portando
+translating:      Tranduzindo
+summaries:        Sumários
+links:            Ligações
+contact:          Contactos
+slack:            Slack
+mailing-lists:    Listas de eCorreio
+forums:           Forums
+community:        Community Resources
+irc-channels:     Canais de IRC
+credits:          Créditos
+acknowledgements: A saber...
+pictures:         Fotografias
+developers-together: Massa de desenvolvidores
+sponsors:         Patrocínios
+linking:          Ligando
+
+[misc]
+
+go:               Ir
+search:           Procurar
+copyright:        Direitos de Cópia © 1995-2026, A Equipa de Desenvolvimento AROS. Todos Os Direitos Reservados.
+trademarks:       Amiga®, AmigaOS®, Workbench e Intuition são marcas registadas de Amiga Inc. Todas as outras marcas comerciais pertencem aos seus respectivos proprietários.
+read-more:        Leia mais...
+large-image:      Imagem maior...

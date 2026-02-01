@@ -1,5 +1,4 @@
-# -*- coding: iso-8859-1 -*-
-# Copyright © 2002-2007, The AROS Development Team. All rights reserved.
+# Copyright (C) 2002-2007, The AROS Development Team. All rights reserved.
 # $Id$
 
 import os, shutil
@@ -65,7 +64,7 @@ def pathscopy( entries, srcpath, dstpath):
     """
     if not isinstance( entries, list ): entries = [ entries ]
 
-    pathentries= map( (lambda e: os.path.join( srcpath, e)), entries)
+    pathentries= list(map( (lambda e: os.path.join( srcpath, e)), entries))
     copy( pathentries, dstpath)
 
 
@@ -91,16 +90,16 @@ def copytree(src, dst, symlinks=0):
             else:
                 if newer( srcname, dstname ):
                     shutil.copy( srcname, dstname )
-        except (IOError, os.error), why:
-            print "Can't copy %s to %s: %s" % (`srcname`, `dstname`, str(why))
+        except (IOError, os.error) as why:
+            print("Can't copy %s to %s: %s" % (repr(srcname), repr(dstname), str(why)))
 
 
 def reportSkipping( message ):
-    print '\033[1m\033[32m*\033[30m', message, '\033[0m'
+    print('\033[1m\033[32m*\033[30m', message, '\033[0m')
 
 
 def reportBuilding( message ):
-    print '\033[1m\033[33m*\033[30m', message, '\033[0m'
+    print('\033[1m\033[33m*\033[30m', message, '\033[0m')
 
 
 def titleReST( title):

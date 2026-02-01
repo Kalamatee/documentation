@@ -1,7 +1,5 @@
-# Author: David Goodger
-# Contact: goodger@users.sourceforge.net
-# Revision: $Revision$
-# Date: $Date$
+# $Id: misc.py 9037 2022-03-05 23:31:10Z milde $
+# Author: David Goodger <goodger@python.org>
 # Copyright: This module has been placed in the public domain.
 
 """
@@ -11,7 +9,7 @@ Miscellaneous transforms.
 __docformat__ = 'reStructuredText'
 
 from docutils import nodes
-from docutils.transforms import Transform, TransformError
+from docutils.transforms import Transform
 
 
 class CallBack(Transform):
@@ -51,8 +49,8 @@ class ClassAttribute(Transform):
             # Check for appropriate following siblings:
             for index in range(parent.index(child) + 1, len(parent)):
                 element = parent[index]
-                if (isinstance(element, nodes.Invisible) or
-                    isinstance(element, nodes.system_message)):
+                if (isinstance(element, nodes.Invisible)
+                    or isinstance(element, nodes.system_message)):
                     continue
                 element['classes'] += pending.details['class']
                 pending.parent.remove(pending)
@@ -96,26 +94,27 @@ class Transitions(Transform):
     default_priority = 830
 
     def apply(self):
-        for node in self.document.traverse(nodes.transition):
+        for node in self.document.findall(nodes.transition):
             self.visit_transition(node)
 
     def visit_transition(self, node):
         index = node.parent.index(node)
         error = None
-        if (index == 0 or
-            isinstance(node.parent[0], nodes.title) and
-            (index == 1 or
-             isinstance(node.parent[1], nodes.subtitle) and
-             index == 2)):
-            assert (isinstance(node.parent, nodes.document) or
-                    isinstance(node.parent, nodes.section))
+        if (index == 0
+            or isinstance(node.parent[0], nodes.title)
+            and (index == 1
+                 or isinstance(node.parent[1], nodes.subtitle)
+                 and index == 2)):
+            assert (isinstance(node.parent, nodes.document)
+                    or isinstance(node.parent, nodes.section))
             error = self.document.reporter.error(
                 'Document or section may not begin with a transition.',
-                line=node.line)
+                source=node.source, line=node.line)
         elif isinstance(node.parent[index - 1], nodes.transition):
             error = self.document.reporter.error(
                 'At least one body element must separate transitions; '
-                'adjacent transitions are not allowed.', line=node.line)
+                'adjacent transitions are not allowed.',
+                source=node.source, line=node.line)
         if error:
             # Insert before node and update index.
             node.parent.insert(index, error)

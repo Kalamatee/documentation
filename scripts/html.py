@@ -1,5 +1,4 @@
-# -*- coding: iso-8859-1 -*-
-# Copyright © 2002, The AROS Development Team. All rights reserved.
+# Copyright (C) 2002, The AROS Development Team. All rights reserved.
 # $Id$
 
 # The core framework classes
@@ -50,48 +49,22 @@ class Standard( Container ):
         self.name       = name
         self.attributes = attributes
 
-        if self.attributes.has_key( 'CLASS' ):
+        if 'CLASS' in self.attributes:
             self.attributes['class'] = self.attributes['CLASS']
             del self.attributes['CLASS']
             
         if defaults:
-            for key in defaults.keys():
+            for key in list(defaults.keys()):
                 if key not in self.attributes: 
                     self.attributes[key] = defaults[key]
 
     def __str__( self ):
         result  = '<' + self.name
-        for name in self.attributes.keys():
+        for name in list(self.attributes.keys()):
             result += ' ' + name + '="' + str( self.attributes[name] ) + '"'
         result += '>'
         result += Container.__str__( self )
-        result += '</' + self.name + '>\n'
-
-        return result
-
-# for entries which don't have a closing tag like <img> where
-# </img> would be illegal
-class StandardNoClose( Container ):
-    def __init__( self, name, attributes, contents=None, defaults=None ):
-        Container.__init__( self, contents )
-
-        self.name       = name
-        self.attributes = attributes
-
-        if self.attributes.has_key( 'CLASS' ):
-            self.attributes['class'] = self.attributes['CLASS']
-            del self.attributes['CLASS']
-            
-        if defaults:
-            for key in defaults.keys():
-                if key not in self.attributes: 
-                    self.attributes[key] = defaults[key]
-
-    def __str__( self ):
-        result  = '<' + self.name
-        for name in self.attributes.keys():
-            result += ' ' + name + '="' + str( self.attributes[name] ) + '"'
-        result += '>\n'
+        result += '</' + self.name + '>'
 
         return result
 
@@ -102,18 +75,18 @@ class StandardEmpty( Node ):
         self.name       = name
         self.attributes = attributes
 
-        if self.attributes.has_key( 'CLASS' ):
+        if 'CLASS' in self.attributes:
             self.attributes['class'] = self.attributes['CLASS']
             del self.attributes['CLASS']
         
         if defaults:
-            for key in defaults.keys():
+            for key in list(defaults.keys()):
                 if key not in self.attributes:
                     self.attributes[key] = defaults[key]
                     
     def __str__( self ):
         result  = '<' + self.name
-        for name in self.attributes.keys():
+        for name in list(self.attributes.keys()):
             result += ' ' + name + '="' + str( self.attributes[name] ) + '"'
         result += '>'
 
@@ -144,17 +117,6 @@ class Title( Standard ):
 class Meta( StandardEmpty ):
     def __init__( self, **attributes ):
         StandardEmpty.__init__( self, 'meta', attributes )
-
-class Charset( StandardEmpty ):
-    def __init__( self, charset ):
-        self.charset = charset
-
-    def __str__( self ):
-        result  = '<' + 'meta'
-        result += ' http-equiv="Content-Type"'
-        result += ' content="text/html; charset=' + self.charset + '">'
-
-        return result
 
 class Link( StandardEmpty ):
     def __init__( self, **attributes ):
@@ -225,17 +187,13 @@ class A( Standard ):
     def __init__( self, contents=None, **attributes ):
         Standard.__init__( self, 'a', attributes, contents )
 
-class Img( StandardNoClose ):
+class Img( Standard ):
     def __init__( self, contents=None, **attributes ):
-        StandardNoClose.__init__( self, 'img', attributes, contents )
+        Standard.__init__( self, 'img', attributes, contents )
 
 class P( Standard ):
     def __init__( self, contents=None, **attributes ):
         Standard.__init__( self, 'p', attributes, contents )
-
-class Div( Standard ):
-    def __init__( self, contents=None, **attributes ):
-        Standard.__init__( self, 'div', attributes, contents )
 
 class BR( Node ):
     def __str__( self ):

@@ -1,1 +1,0 @@
-De excursión en las montañas de Noruega.

@@ -1,5 +1,4 @@
-# -*- coding: iso-8859-1 -*-
-# Copyright © 2002, The AROS Development Team. All rights reserved.
+# Copyright (C) 2002, The AROS Development Team. All rights reserved.
 # $Id$
 
 from db.tasks.model import *
@@ -74,7 +73,7 @@ def createCategories( file ):
             categories[c.category] = c
 
     # Link categories
-    for key, value in categories.iteritems():
+    for key, value in categories.items():
         if value.parentcategory != None and value.parentcategory != 'everything':
             if value.parentcategory in categories:
                 categories[value.parentcategory].subcategories.append( value )

@@ -1,7 +1,5 @@
-# Author: David Goodger
-# Contact: goodger@users.sourceforge.net
-# Revision: $Revision$
-# Date: $Date$
+# $Id: pep.py 9258 2022-11-21 14:51:43Z milde $
+# Author: David Goodger <goodger@python.org>
 # Copyright: This module has been placed in the public domain.
 
 """
@@ -12,7 +10,7 @@ __docformat__ = 'reStructuredText'
 
 
 from docutils.readers import standalone
-from docutils.transforms import peps, references, misc, frontmatter
+from docutils.transforms import peps, frontmatter
 from docutils.parsers import rst
 
 
@@ -31,7 +29,7 @@ class Reader(standalone.Reader):
     config_section_dependencies = ('readers', 'standalone reader')
 
     def get_transforms(self):
-        transforms = standalone.Reader.get_transforms(self)
+        transforms = super().get_transforms()
         # We have PEP-specific frontmatter handling.
         transforms.remove(frontmatter.DocTitle)
         transforms.remove(frontmatter.SectionSubTitle)
@@ -46,5 +44,5 @@ class Reader(standalone.Reader):
     def __init__(self, parser=None, parser_name=None):
         """`parser` should be ``None``."""
         if parser is None:
-            parser = rst.Parser(rfc2822=1, inliner=self.inliner_class())
+            parser = rst.Parser(rfc2822=True, inliner=self.inliner_class())
         standalone.Reader.__init__(self, parser, '')

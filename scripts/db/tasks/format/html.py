@@ -1,10 +1,9 @@
-# -*- coding: iso-8859-1 -*-
-# Copyright © 2002, The AROS Development Team. All rights reserved.
+# Copyright (C) 2002, The AROS Development Team. All rights reserved.
 # $Id$
 
 import sys, os
 from db.tasks.model import *
-from html_ import *
+from html import *
 
 # Settings
 
@@ -18,12 +17,12 @@ def calculateCategoryScore( item ):
     if isinstance( item, Category):
         if ( item.total - item.amigaonly ) != 0:
             return ( 100 * ( item.completed + item.skipped ) + 50 * item.needssomework ) \
-                    / ( item.total - item.amigaonly )
-    return 0;
+                    // ( item.total - item.amigaonly )
+    return 0
 
 def formatRowCategoryStatus(array, count, total, color):
     if count != 0:
-        array.append( TD( bgcolor = color, width = `int ( round( count * 100.0 / total, 0 ) )` + '%' ) )
+        array.append( TD( bgcolor = color, width = repr(int ( round( count * 100.0 / total, 0 ) )) + '%' ) )
 
 def formatRowCategory( item, extension ):
 
@@ -315,7 +314,7 @@ def format( root, directory, template, lang, extension, parent = None ):
             'CONTENT' : contentstr
         }
 
-    output = file( os.path.join( directory, root.category + extension ), 'w' )
+    output = open( os.path.join( directory, root.category + extension ), 'w' )
     output.write( template % strings )
     output.close()
 

@@ -1,150 +1,78 @@
-# Author: David Goodger
-# Contact: goodger@python.org
-# Revision: $Revision$
-# Date: $Date$
+# $Id: __init__.py 9426 2023-07-03 12:38:54Z milde $
+# Author: David Goodger <goodger@python.org>
 # Copyright: This module has been placed in the public domain.
 
 """
 This package contains directive implementation modules.
-
-The interface for directive functions is as follows::
-
-    def directive_fn(name, arguments, options, content, lineno,
-                     content_offset, block_text, state, state_machine):
-        code...
-
-    # Set function attributes:
-    directive_fn.arguments = ...
-    directive_fn.options = ...
-    direcitve_fn.content = ...
-
-Parameters:
-
-- ``name`` is the directive type or name (string).
-
-- ``arguments`` is a list of positional arguments (strings).
-
-- ``options`` is a dictionary mapping option names (strings) to values (type
-  depends on option conversion functions; see below).
-
-- ``content`` is a list of strings, the directive content.
-
-- ``lineno`` is the line number of the first line of the directive.
-
-- ``content_offset`` is the line offset of the first line of the content from
-  the beginning of the current input.  Used when initiating a nested parse.
-
-- ``block_text`` is a string containing the entire directive.  Include it as
-  the content of a literal block in a system message if there is a problem.
-
-- ``state`` is the state which called the directive function.
-
-- ``state_machine`` is the state machine which controls the state which called
-  the directive function.
-
-Function attributes, interpreted by the directive parser (which calls the
-directive function):
-
-- ``arguments``: A 3-tuple specifying the expected positional arguments, or
-  ``None`` if the directive has no arguments.  The 3 items in the tuple are
-  ``(required, optional, whitespace OK in last argument)``:
-
-  1. The number of required arguments.
-  2. The number of optional arguments.
-  3. A boolean, indicating if the final argument may contain whitespace.
-
-  Arguments are normally single whitespace-separated words.  The final
-  argument may contain whitespace if the third item in the argument spec tuple
-  is 1/True.  If the form of the arguments is more complex, specify only one
-  argument (either required or optional) and indicate that final whitespace is
-  OK; the client code must do any context-sensitive parsing.
-
-- ``options``: A dictionary, mapping known option names to conversion
-  functions such as `int` or `float`.  ``None`` or an empty dict implies no
-  options to parse.  Several directive option conversion functions are defined
-  in this module.
-
-  Option conversion functions take a single parameter, the option argument (a
-  string or ``None``), validate it and/or convert it to the appropriate form.
-  Conversion functions may raise ``ValueError`` and ``TypeError`` exceptions.
-
-- ``content``: A boolean; true if content is allowed.  Client code must handle
-  the case where content is required but not supplied (an empty content list
-  will be supplied).
-
-Directive functions return a list of nodes which will be inserted into the
-document tree at the point where the directive was encountered (can be an
-empty list).
-
-See `Creating reStructuredText Directives`_ for more information.
-
-.. _Creating reStructuredText Directives:
-   http://docutils.sourceforge.net/docs/howto/rst-directives.html
 """
 
 __docformat__ = 'reStructuredText'
 
 import re
 import codecs
-from docutils import nodes
+from importlib import import_module
+
+from docutils import nodes, parsers
+from docutils.utils import split_escaped_whitespace, escape2null
 from docutils.parsers.rst.languages import en as _fallback_language_module
 
 
 _directive_registry = {
-      'attention': ('admonitions', 'attention'),
-      'caution': ('admonitions', 'caution'),
-      'danger': ('admonitions', 'danger'),
-      'error': ('admonitions', 'error'),
-      'important': ('admonitions', 'important'),
-      'note': ('admonitions', 'note'),
-      'tip': ('admonitions', 'tip'),
-      'hint': ('admonitions', 'hint'),
-      'warning': ('admonitions', 'warning'),
-      'admonition': ('admonitions', 'admonition'),
-      'sidebar': ('body', 'sidebar'),
-      'topic': ('body', 'topic'),
-      'line-block': ('body', 'line_block'),
-      'parsed-literal': ('body', 'parsed_literal'),
-      'rubric': ('body', 'rubric'),
-      'epigraph': ('body', 'epigraph'),
-      'highlights': ('body', 'highlights'),
-      'pull-quote': ('body', 'pull_quote'),
-      'compound': ('body', 'compound'),
-      'container': ('body', 'container'),
-      #'questions': ('body', 'question_list'),
-      'table': ('tables', 'table'),
-      'csv-table': ('tables', 'csv_table'),
-      'list-table': ('tables', 'list_table'),
-      'image': ('images', 'image'),
-      'figure': ('images', 'figure'),
-      'contents': ('parts', 'contents'),
-      'sectnum': ('parts', 'sectnum'),
-      'header': ('parts', 'header'),
-      'footer': ('parts', 'footer'),
-      #'footnotes': ('parts', 'footnotes'),
-      #'citations': ('parts', 'citations'),
-      'target-notes': ('references', 'target_notes'),
-      'meta': ('html', 'meta'),
-      #'imagemap': ('html', 'imagemap'),
-      'raw': ('misc', 'raw'),
-      'include': ('misc', 'include'),
-      'replace': ('misc', 'replace'),
-      'unicode': ('misc', 'unicode_directive'),
-      'class': ('misc', 'class_directive'),
-      'role': ('misc', 'role'),
-      'default-role': ('misc', 'default_role'),
-      'title': ('misc', 'title'),
-      'date': ('misc', 'date'),
-      'restructuredtext-test-directive': ('misc', 'directive_test_function'),}
-"""Mapping of directive name to (module name, function name).  The directive
-name is canonical & must be lowercase.  Language-dependent names are defined
-in the ``language`` subpackage."""
-
-_modules = {}
-"""Cache of imported directive modules."""
+      'attention': ('admonitions', 'Attention'),
+      'caution': ('admonitions', 'Caution'),
+      'code': ('body', 'CodeBlock'),
+      'danger': ('admonitions', 'Danger'),
+      'error': ('admonitions', 'Error'),
+      'important': ('admonitions', 'Important'),
+      'note': ('admonitions', 'Note'),
+      'tip': ('admonitions', 'Tip'),
+      'hint': ('admonitions', 'Hint'),
+      'warning': ('admonitions', 'Warning'),
+      'admonition': ('admonitions', 'Admonition'),
+      'sidebar': ('body', 'Sidebar'),
+      'topic': ('body', 'Topic'),
+      'line-block': ('body', 'LineBlock'),
+      'parsed-literal': ('body', 'ParsedLiteral'),
+      'math': ('body', 'MathBlock'),
+      'rubric': ('body', 'Rubric'),
+      'epigraph': ('body', 'Epigraph'),
+      'highlights': ('body', 'Highlights'),
+      'pull-quote': ('body', 'PullQuote'),
+      'compound': ('body', 'Compound'),
+      'container': ('body', 'Container'),
+      # 'questions': ('body', 'question_list'),
+      'table': ('tables', 'RSTTable'),
+      'csv-table': ('tables', 'CSVTable'),
+      'list-table': ('tables', 'ListTable'),
+      'image': ('images', 'Image'),
+      'figure': ('images', 'Figure'),
+      'contents': ('parts', 'Contents'),
+      'sectnum': ('parts', 'Sectnum'),
+      'header': ('parts', 'Header'),
+      'footer': ('parts', 'Footer'),
+      # 'footnotes': ('parts', 'footnotes'),
+      # 'citations': ('parts', 'citations'),
+      'target-notes': ('references', 'TargetNotes'),
+      'meta': ('misc', 'Meta'),
+      # 'imagemap': ('html', 'imagemap'),
+      'raw': ('misc', 'Raw'),
+      'include': ('misc', 'Include'),
+      'replace': ('misc', 'Replace'),
+      'unicode': ('misc', 'Unicode'),
+      'class': ('misc', 'Class'),
+      'role': ('misc', 'Role'),
+      'default-role': ('misc', 'DefaultRole'),
+      'title': ('misc', 'Title'),
+      'date': ('misc', 'Date'),
+      'restructuredtext-test-directive': ('misc', 'TestDirective'),
+      }
+"""Mapping of directive name to (module name, class name).  The
+directive name is canonical & must be lowercase.  Language-dependent
+names are defined in the ``language`` subpackage."""
 
 _directives = {}
-"""Cache of imported directive functions."""
+"""Cache of imported directives."""
+
 
 def directive(directive_name, language_module, document):
     """
@@ -155,12 +83,12 @@ def directive(directive_name, language_module, document):
     normname = directive_name.lower()
     messages = []
     msg_text = []
-    if _directives.has_key(normname):
+    if normname in _directives:
         return _directives[normname], messages
     canonicalname = None
     try:
         canonicalname = language_module.directives[normname]
-    except AttributeError, error:
+    except AttributeError as error:
         msg_text.append('Problem retrieving directive entry from language '
                         'module %r: %s.' % (language_module, error))
     except KeyError:
@@ -181,38 +109,43 @@ def directive(directive_name, language_module, document):
             '\n'.join(msg_text), line=document.current_line)
         messages.append(message)
     try:
-        modulename, functionname = _directive_registry[canonicalname]
+        modulename, classname = _directive_registry[canonicalname]
     except KeyError:
         # Error handling done by caller.
         return None, messages
-    if _modules.has_key(modulename):
-        module = _modules[modulename]
-    else:
-        try:
-            module = __import__(modulename, globals(), locals())
-        except ImportError, detail:
-            messages.append(document.reporter.error(
-                'Error importing directive module "%s" (directive "%s"):\n%s'
-                % (modulename, directive_name, detail),
-                line=document.current_line))
-            return None, messages
     try:
-        function = getattr(module, functionname)
-        _directives[normname] = function
-    except AttributeError:
+        module = import_module('docutils.parsers.rst.directives.'+modulename)
+    except ImportError as detail:
         messages.append(document.reporter.error(
-            'No function "%s" in module "%s" (directive "%s").'
-            % (functionname, modulename, directive_name),
+            'Error importing directive module "%s" (directive "%s"):\n%s'
+            % (modulename, directive_name, detail),
             line=document.current_line))
         return None, messages
-    return function, messages
+    try:
+        directive = getattr(module, classname)
+        _directives[normname] = directive
+    except AttributeError:
+        messages.append(document.reporter.error(
+            'No directive class "%s" in module "%s" (directive "%s").'
+            % (classname, modulename, directive_name),
+            line=document.current_line))
+        return None, messages
+    return directive, messages
 
-def register_directive(name, directive_function):
+
+def register_directive(name, directive):
     """
     Register a nonstandard application-defined directive function.
     Language lookups are not needed for such functions.
     """
-    _directives[name] = directive_function
+    _directives[name] = directive
+
+
+# conversion functions for `Directive.option_spec`
+# ------------------------------------------------
+#
+# see also `parsers.rst.Directive` in ../__init__.py.
+
 
 def flag(argument):
     """
@@ -226,6 +159,7 @@ def flag(argument):
     else:
         return None
 
+
 def unchanged_required(argument):
     """
     Return the argument text, unchanged.
@@ -238,6 +172,7 @@ def unchanged_required(argument):
     else:
         return argument  # unchanged!
 
+
 def unchanged(argument):
     """
     Return the argument text, unchanged.
@@ -246,9 +181,10 @@ def unchanged(argument):
     No argument implies empty string ("").
     """
     if argument is None:
-        return u''
+        return ''
     else:
         return argument  # unchanged!
+
 
 def path(argument):
     """
@@ -260,12 +196,12 @@ def path(argument):
     if argument is None:
         raise ValueError('argument required but none supplied')
     else:
-        path = ''.join([s.strip() for s in argument.splitlines()])
-        return path
+        return ''.join(s.strip() for s in argument.splitlines())
+
 
 def uri(argument):
     """
-    Return the URI argument with whitespace removed.
+    Return the URI argument with unescaped whitespace removed.
     (Directive option conversion function.)
 
     Raise ``ValueError`` if no argument is found.
@@ -273,8 +209,10 @@ def uri(argument):
     if argument is None:
         raise ValueError('argument required but none supplied')
     else:
-        uri = ''.join(argument.split())
-        return uri
+        parts = split_escaped_whitespace(escape2null(argument))
+        return ' '.join(''.join(nodes.unescape(part).split())
+                        for part in parts)
+
 
 def nonnegative_int(argument):
     """
@@ -286,31 +224,71 @@ def nonnegative_int(argument):
         raise ValueError('negative value; must be positive or zero')
     return value
 
+
+def percentage(argument):
+    """
+    Check for an integer percentage value with optional percent sign.
+    (Directive option conversion function.)
+    """
+    try:
+        argument = argument.rstrip(' %')
+    except AttributeError:
+        pass
+    return nonnegative_int(argument)
+
+
 length_units = ['em', 'ex', 'px', 'in', 'cm', 'mm', 'pt', 'pc']
+
 
 def get_measure(argument, units):
     """
     Check for a positive argument of one of the units and return a
     normalized string of the form "<value><unit>" (without space in
     between).
-    
+    (Directive option conversion function.)
+
     To be called from directive option conversion functions.
     """
     match = re.match(r'^([0-9.]+) *(%s)$' % '|'.join(units), argument)
     try:
-        assert match is not None
         float(match.group(1))
-    except (AssertionError, ValueError):
+    except (AttributeError, ValueError):
         raise ValueError(
             'not a positive measure of one of the following units:\n%s'
-            % ' '.join(['"%s"' % i for i in units]))
+            % ' '.join('"%s"' % i for i in units))
     return match.group(1) + match.group(2)
+
 
 def length_or_unitless(argument):
     return get_measure(argument, length_units + [''])
 
-def length_or_percentage_or_unitless(argument):
-    return get_measure(argument, length_units + ['%', ''])
+
+def length_or_percentage_or_unitless(argument, default=''):
+    """
+    Return normalized string of a length or percentage unit.
+    (Directive option conversion function.)
+
+    Add <default> if there is no unit. Raise ValueError if the argument is not
+    a positive measure of one of the valid CSS units (or without unit).
+
+    >>> length_or_percentage_or_unitless('3 pt')
+    '3pt'
+    >>> length_or_percentage_or_unitless('3%', 'em')
+    '3%'
+    >>> length_or_percentage_or_unitless('3')
+    '3'
+    >>> length_or_percentage_or_unitless('3', 'px')
+    '3px'
+    """
+    try:
+        return get_measure(argument, length_units + ['%'])
+    except ValueError:
+        try:
+            return get_measure(argument, ['']) + default
+        except ValueError:
+            # raise ValueError with list of valid units:
+            return get_measure(argument, length_units + ['%'])
+
 
 def class_option(argument):
     """
@@ -330,8 +308,10 @@ def class_option(argument):
         class_names.append(class_name)
     return class_names
 
+
 unicode_pattern = re.compile(
     r'(?:0x|x|\\x|U\+?|\\u)([0-9a-f]+)$|&#x([0-9a-f]+);$', re.IGNORECASE)
+
 
 def unicode_code(code):
     r"""
@@ -346,20 +326,21 @@ def unicode_code(code):
     """
     try:
         if code.isdigit():                  # decimal number
-            return unichr(int(code))
+            return chr(int(code))
         else:
             match = unicode_pattern.match(code)
             if match:                       # hex number
                 value = match.group(1) or match.group(2)
-                return unichr(int(value, 16))
+                return chr(int(value, 16))
             else:                           # other text
                 return code
-    except OverflowError, detail:
+    except OverflowError as detail:
         raise ValueError('code too large (%s)' % detail)
+
 
 def single_char_or_unicode(argument):
     """
-    A single character is returned as-is.  Unicode characters codes are
+    A single character is returned as-is.  Unicode character codes are
     converted as in `unicode_code`.  (Directive option conversion function.)
     """
     char = unicode_code(argument)
@@ -367,6 +348,7 @@ def single_char_or_unicode(argument):
         raise ValueError('%r invalid; must be a single character or '
                          'a Unicode code' % char)
     return char
+
 
 def single_char_or_whitespace_or_unicode(argument):
     """
@@ -381,6 +363,7 @@ def single_char_or_whitespace_or_unicode(argument):
         char = single_char_or_unicode(argument)
     return char
 
+
 def positive_int(argument):
     """
     Converts the argument into an integer.  Raises ValueError for negative,
@@ -390,6 +373,7 @@ def positive_int(argument):
     if value < 1:
         raise ValueError('negative or zero value; must be positive')
     return value
+
 
 def positive_int_list(argument):
     """
@@ -405,9 +389,10 @@ def positive_int_list(argument):
         entries = argument.split()
     return [positive_int(entry) for entry in entries]
 
+
 def encoding(argument):
     """
-    Verfies the encoding argument by lookup.
+    Verifies the encoding argument by lookup.
     (Directive option conversion function.)
 
     Raises ValueError for unknown encodings.
@@ -417,6 +402,7 @@ def encoding(argument):
     except LookupError:
         raise ValueError('unknown encoding: "%s"' % argument)
     return argument
+
 
 def choice(argument, values):
     """
@@ -444,6 +430,37 @@ def choice(argument, values):
         raise ValueError('"%s" unknown; choose from %s'
                          % (argument, format_values(values)))
 
+
 def format_values(values):
-    return '%s, or "%s"' % (', '.join(['"%s"' % s for s in values[:-1]]),
+    return '%s, or "%s"' % (', '.join('"%s"' % s for s in values[:-1]),
                             values[-1])
+
+
+def value_or(values, other):
+    """
+    Directive option conversion function.
+
+    The argument can be any of `values` or `argument_type`.
+    """
+    def auto_or_other(argument):
+        if argument in values:
+            return argument
+        else:
+            return other(argument)
+    return auto_or_other
+
+
+def parser_name(argument):
+    """
+    Return a docutils parser whose name matches the argument.
+    (Directive option conversion function.)
+
+    Return `None`, if the argument evaluates to `False`.
+    Raise `ValueError` if importing the parser module fails.
+    """
+    if not argument:
+        return None
+    try:
+        return parsers.get_parser_class(argument)
+    except ImportError as err:
+        raise ValueError(str(err))

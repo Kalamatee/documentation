@@ -1,0 +1,46 @@
+name: Create PR from master to azure-pipelines
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  create_pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gh
+
+      - name: Authenticate GitHub CLI
+        run: gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Delete remote temp branch if exists
+        run: |
+          git push origin --delete sync-master-to-azure-pipelines || echo "Branch not found, skipping delete"
+
+      - name: Create branch from master
+        run: |
+          git checkout -b sync-master-to-azure-pipelines
+
+      - name: Push branch to remote
+        run: |
+          git push --set-upstream origin sync-master-to-azure-pipelines --force
+
+      - name: Create or update Pull Request via gh CLI
+        run: |
+          gh pr view sync-master-to-azure-pipelines --repo ${{ github.repository }} --json number -q '.number' && \
+          gh pr edit sync-master-to-azure-pipelines --repo ${{ github.repository }} --base azure-pipelines --title "Sync master into azure-pipelines" --body "Automated PR to keep azure-pipelines branch up to date with master." || \
+          gh pr create --repo ${{ github.repository }} --base azure-pipelines --head sync-master-to-azure-pipelines --title "Sync master into azure-pipelines" --body "Automated PR to keep azure-pipelines branch up to date with master."

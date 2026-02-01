@@ -1,13 +1,11 @@
-# Author:    Adam Chodorowski
-# Contact:   chodorowski@users.sourceforge.net
-# Revision:  $Revision$
-# Date:      $Date$
+# $Id: sv.py 9030 2022-03-05 23:28:32Z milde $
+# Author: Adam Chodorowski <chodorowski@users.sourceforge.net>
 # Copyright: This module has been placed in the public domain.
 
 # New language mappings are welcome.  Before doing a new translation, please
-# read <http://docutils.sf.net/docs/howto/i18n.html>.  Two files must be
-# translated for each language: one in docutils/languages, the other in
-# docutils/parsers/rst/languages.
+# read <https://docutils.sourceforge.io/docs/howto/i18n.html>.
+# Two files must be translated for each language: one in docutils/languages,
+# the other in docutils/parsers/rst/languages.
 
 """
 Swedish language mappings for language-dependent features of reStructuredText.
@@ -15,78 +13,84 @@ Swedish language mappings for language-dependent features of reStructuredText.
 
 __docformat__ = 'reStructuredText'
 
-
 directives = {
-      u'observera': 'attention',
-      u'caution (translation required)': 'caution',
-      u'fara': 'danger',
-      u'fel': 'error',
-      u'v\u00e4gledning': 'hint',
-      u'viktigt': 'important',
-      u'notera': 'note',
-      u'tips': 'tip',
-      u'varning': 'warning',
-      u'admonition (translation required)': 'admonition',
-      u'sidebar (translation required)': 'sidebar',
-      u'\u00e4mne': 'topic',
-      u'line-block (translation required)': 'line-block',
-      u'parsed-literal (translation required)': 'parsed-literal',
-      u'mellanrubrik': 'rubric',
-      u'epigraph (translation required)': 'epigraph',
-      u'highlights (translation required)': 'highlights',
-      u'pull-quote (translation required)': 'pull-quote',
-      u'compound (translation required)': 'compound',
-      u'container (translation required)': 'container',
-      # u'fr\u00e5gor': 'questions',
+      'observera': 'attention',
+      'akta': 'caution',  # also 'försiktigt'
+      'kod': 'code',
+      'fara': 'danger',
+      'fel': 'error',
+      'vink': 'hint',  # also 'hint'
+      'viktigt': 'important',
+      'notera': 'note',
+      'tips': 'tip',
+      'varning': 'warning',
+      'anmärkning': 'admonition',  # literal 'tillrättavisning', 'förmaning'
+      'sidorad': 'sidebar',
+      'ämne': 'topic',
+      'tema': 'topic',
+      'rad-block': 'line-block',
+      # 'tolkad-bokstavlig'?
+      'parsed-literal (translation required)': 'parsed-literal',
+      'rubrik': 'rubric',
+      'epigraf': 'epigraph',
+      'höjdpunkter': 'highlights',
+      'pull-quote (translation required)': 'pull-quote',
+      'sammansatt': 'compound',
+      'container': 'container',
+      # 'frågor': 'questions',
       # NOTE: A bit long, but recommended by http://www.nada.kth.se/dataterm/:
-      # u'fr\u00e5gor-och-svar': 'questions',
-      # u'vanliga-fr\u00e5gor': 'questions',  
-      u'table (translation required)': 'table',
-      u'csv-table (translation required)': 'csv-table',
-      u'list-table (translation required)': 'list-table',
-      u'meta': 'meta',
-      # u'bildkarta': 'imagemap',   # FIXME: Translation might be too literal.
-      u'bild': 'image',
-      u'figur': 'figure',
-      u'inkludera': 'include',   
-      u'r\u00e5': 'raw',            # FIXME: Translation might be too literal.
-      u'ers\u00e4tt': 'replace', 
-      u'unicode': 'unicode',
-      u'datum': 'date',
-      u'class (translation required)': 'class',
-      u'role (translation required)': 'role',
-      u'default-role (translation required)': 'default-role',
-      u'title (translation required)': 'title',
-      u'inneh\u00e5ll': 'contents',
-      u'sektionsnumrering': 'sectnum',
-      u'target-notes (translation required)': 'target-notes',
-      u'header (translation required)': 'header',
-      u'footer (translation required)': 'footer',
-      # u'fotnoter': 'footnotes',
-      # u'citeringar': 'citations',
+      # 'frågor-och-svar': 'questions',
+      # 'vanliga-frågor': 'questions',
+      'tabell': 'table',
+      'csv-tabell': 'csv-table',
+      'list-tabell': 'list-table',
+      'meta': 'meta',
+      'matematik': 'math',
+      # 'bildkarta': 'imagemap',  # FIXME: Translation might be too literal.
+      'bild': 'image',
+      'figur': 'figure',
+      'inkludera': 'include',
+      'rå': 'raw',
+      'ersätta': 'replace',
+      'unicode': 'unicode',
+      'datum': 'date',
+      'klass': 'class',
+      'roll': 'role',
+      'standardroll': 'default-role',
+      'titel': 'title',
+      'innehåll': 'contents',
+      'sektionsnumrering': 'sectnum',
+      'target-notes (translation required)': 'target-notes',
+      'sidhuvud': 'header',
+      'sidfot': 'footer',
+      # 'fotnoter': 'footnotes',
+      # 'citeringar': 'citations',
       }
 """Swedish name to registered (in directives/__init__.py) directive name
 mapping."""
 
 roles = {
-      u'abbreviation (translation required)': 'abbreviation',
-      u'acronym (translation required)': 'acronym',
-      u'index (translation required)': 'index',
-      u'subscript (translation required)': 'subscript',
-      u'superscript (translation required)': 'superscript',
-      u'title-reference (translation required)': 'title-reference',
-      u'pep-reference (translation required)': 'pep-reference',
-      u'rfc-reference (translation required)': 'rfc-reference',
-      u'emphasis (translation required)': 'emphasis',
-      u'strong (translation required)': 'strong',
-      u'literal (translation required)': 'literal',
-      u'named-reference (translation required)': 'named-reference',
-      u'anonymous-reference (translation required)': 'anonymous-reference',
-      u'footnote-reference (translation required)': 'footnote-reference',
-      u'citation-reference (translation required)': 'citation-reference',
-      u'substitution-reference (translation required)': 'substitution-reference',
-      u'target (translation required)': 'target',
-      u'uri-reference (translation required)': 'uri-reference',
-      u'r\u00e5': 'raw',}
+      'förkortning': 'abbreviation',
+      'akronym': 'acronym',
+      'kod': 'code',
+      'index': 'index',
+      'nedsänkt': 'subscript',
+      'upphöjd': 'superscript',
+      'titel-referens': 'title-reference',
+      'pep-referens': 'pep-reference',
+      'rfc-referens': 'rfc-reference',
+      'betoning': 'emphasis',
+      'stark': 'strong',
+      'bokstavlig': 'literal',  # also 'ordagranna'
+      'matematik': 'math',
+      'namngiven-referens': 'named-reference',
+      'anonym-referens': 'anonymous-reference',
+      'fotnot-referens': 'footnote-reference',
+      'citat-referens': 'citation-reference',
+      'ersättnings-referens': 'substitution-reference',
+      'mål': 'target',
+      'uri-referens': 'uri-reference',
+      'rå': 'raw',
+      }
 """Mapping of Swedish role names to canonical role names for interpreted text.
 """

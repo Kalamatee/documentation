@@ -1,13 +1,11 @@
-# Author: Tomasz Paul
-# Contact: tpaul@wp.pl
-# Revision: $Revision$
-# Date: $Date$
+# $Id$
+# Author: Robert Wojciechowicz <rw@smsnet.pl>
 # Copyright: This module has been placed in the public domain.
 
 # New language mappings are welcome.  Before doing a new translation, please
-# read <http://docutils.sf.net/docs/howto/i18n.html>.  Two files must be
-# translated for each language: one in docutils/languages, the other in
-# docutils/parsers/rst/languages.
+# read <https://docutils.sourceforge.io/docs/howto/i18n.html>.
+# Two files must be translated for each language: one in docutils/languages,
+# the other in docutils/parsers/rst/languages.
 
 """
 Polish-language mappings for language-dependent features of
@@ -18,80 +16,86 @@ __docformat__ = 'reStructuredText'
 
 
 directives = {
-      u'uwaga': 'attention',
-      u'ostrze\u017cenie': 'caution',
-      u'niebezpiecze\u0144stwo': 'danger',
-      u'b\u0142\u0105d': 'error',
-      u'wzmianka': 'hint',
-      u'wa\u017cne': 'important',
-      u'przypis': 'note',
-      u'wskaz\u00f3wka': 'tip',
-      u'ostrze\u017cenie': 'warning',
-      u'przestroga': 'admonition',
-      u'sidebar (translation required)': 'sidebar',
-      u'sidebar (translation required)': 'sidebar',
-      u'temat': 'topic',
-      u'line-block (translation required)': 'line-block',
-      u'parsed-literal (translation required)': 'parsed-literal',
-      u'rubryka': 'rubric',
-      u'epigraph (translation required)': 'epigraph',
-      u'highlights (translation required)': 'highlights',
-      u'pull-quote (translation required)': 'pull-quote', 
-      u'zusammengesetzt (translation required)': 'compound',
-      u'verbund (translation required)': 'compound',
-      u'container (translation required)': 'container',
-      #'pytania': 'questions',
-      u'tabela': 'table',
-      u'tabela csv': 'csv-table',
-      u'list-table (translation required)': 'list-table',
-      u'meta': 'meta',
-      #'imagemap (translation required)': 'imagemap',
-      u'obraz': 'image',
-      u'figure (translation required)': 'figure',
-      u'raw (translation required)': 'raw',
-      u'raw (translation required)': 'raw',
-      u'do\u0142\u0105cz': 'include',
-      u'zamiana': 'replace',
-      u'zamieni\u0107': 'replace',
-      u'zamie\u0144': 'replace',
-      u'unicode': 'unicode',
-      u'data': 'date',
-      u'klasa': 'class',
-      u'role (translation required)': 'role',
-      u'default-role (translation required)': 'default-role',
-      u'title (translation required)': 'title',
-      u'spis tre\u015bci': 'contents',
-      u'numeracja sekcji': 'sectnum',
-      u'sectnum (translation required)': 'sectnum',
-      u'target-notes (translation required)': 'target-notes',
-      u'header (translation required)': 'header',
-      u'footer (translation required)': 'footer',
-      #u'footnotes': 'footnotes',
-      #'cytat': 'citations',
-      }
+    # language-dependent: fixed
+    'uwaga': 'attention',
+    'ostrożnie': 'caution',
+    'code (translation required)': 'code',
+    'niebezpieczeństwo': 'danger',
+    'błąd': 'error',
+    'wskazówka': 'hint',
+    'ważne': 'important',
+    'przypis': 'note',
+    'rada': 'tip',
+    'ostrzeżenie': 'warning',
+    'zauważenie': 'admonition',  # remark
+    'upomnienie': 'admonition',  # sic! kept for backwards compatibiltity
+    'ramka': 'sidebar',
+    'temat': 'topic',
+    'blok-linii': 'line-block',
+    'sparsowany-literał': 'parsed-literal',
+    'rubryka': 'rubric',
+    'epigraf': 'epigraph',
+    'highlights': 'highlights',  # FIXME no polish equivalent?
+    'pull-quote': 'pull-quote',  # FIXME no polish equivalent?
+    'złożony': 'compound',
+    'kontener': 'container',
+    # 'questions': 'questions',
+    'tabela': 'table',
+    'tabela-csv': 'csv-table',
+    'tabela-listowa': 'list-table',
+    # 'qa': 'questions',
+    # 'faq': 'questions',
+    'meta': 'meta',
+    'math (translation required)': 'math',
+    # 'imagemap': 'imagemap',
+    'obraz': 'image',
+    'rycina': 'figure',
+    'dołącz': 'include',
+    'surowe': 'raw',
+    'zastąp': 'replace',
+    'unikod': 'unicode',
+    'data': 'date',
+    'klasa': 'class',
+    'rola': 'role',
+    'rola-domyślna': 'default-role',
+    'tytuł': 'title',
+    'treść': 'contents',
+    'sectnum': 'sectnum',
+    'numeracja-sekcji': 'sectnum',
+    'nagłówek': 'header',
+    'stopka': 'footer',
+    # 'footnotes': 'footnotes',
+    # 'citations': 'citations',
+    'target-notes': 'target-notes',  # FIXME no polish equivalent?
+    'restructuredtext-test-directive': 'restructuredtext-test-directive'}
 """Polish name to registered (in directives/__init__.py) directive name
 mapping."""
 
 roles = {
-      u'abbreviation (translation required)': 'abbreviation',
-      u'akronim': 'acronym',
-      u'index': 'index',
-      u'indeks dolny': 'subscript',
-      u'indeks g\u00f32rny': 'superscript',
-      u'title-reference': 'title-reference',
-      u'pep-reference (translation required)': 'pep-reference',
-      u'rfc-reference (translation required)': 'rfc-reference',
-      u'emphasis (translation required)': 'emphasis',
-      u'pogrubienie': 'strong',
-      u'literal (translation required)': 'literal',
-      u'named-reference (translation required)': 'named-reference',
-      u'anonimowa referencja': 'anonymous-reference',
-      u'footnote-reference (translation required)': 'footnote-reference',
-      u'citation-reference (translation required)': 'citation-reference',
-      u'substitution-reference (translation required)': 'substitution-reference',
-      u'cel': 'target',
-      u'uri-reference (translation required)': 'uri-reference',
-      u'raw (translation required)': 'raw',
-      u'raw (translation required)': 'raw',}
+    # language-dependent: fixed
+    'skrót': 'abbreviation',
+    'akronim': 'acronym',
+    'code (translation required)': 'code',
+    'indeks': 'index',
+    'indeks-dolny': 'subscript',
+    'indeks-górny': 'superscript',
+    'referencja-tytuł': 'title-reference',
+    'referencja-pep': 'pep-reference',
+    'referencja-rfc': 'rfc-reference',
+    'podkreślenie': 'emphasis',
+    'wytłuszczenie': 'strong',
+    'dosłownie': 'literal',
+    'math (translation required)': 'math',
+    'referencja-nazwana': 'named-reference',
+    'referencja-anonimowa': 'anonymous-reference',
+    'referencja-przypis': 'footnote-reference',
+    'referencja-cytat': 'citation-reference',
+    'referencja-podstawienie': 'substitution-reference',
+    'cel': 'target',
+    'referencja-uri': 'uri-reference',
+    'uri': 'uri-reference',
+    'url': 'uri-reference',
+    'surowe': 'raw',
+    }
 """Mapping of Polish role names to canonical role names for interpreted text.
 """

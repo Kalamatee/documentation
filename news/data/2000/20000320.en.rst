@@ -1,0 +1,15 @@
+=============
+Miscellaneous
+=============
+
+:Author: Aaron Digulla
+:Date:   2000-03-20
+
+Unnoticed, our WWW site has passed 20'000 hits this weekend. :-)
+
+AmiWorld On-Line *(dead link removed)* has translated versions of their AROS article. There is 
+now a german, an english, an italian and even a japanese version! Follow 
+this link *(dead link removed)* to the index of all articles.
+
+We are currently doing a poll on options. Please read
+this announcement *(dead link removed)*.

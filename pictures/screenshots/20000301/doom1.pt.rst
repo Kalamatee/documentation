@@ -1,0 +1,1 @@
+Poderá corre-lo numa janela grande

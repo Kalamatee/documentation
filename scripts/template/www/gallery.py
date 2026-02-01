@@ -1,10 +1,8 @@
-# -*- coding: iso-8859-1 -*-
-# Copyright © 2002, The AROS Development Team. All rights reserved.
-# $Id$
+# Copyright (C) 2002-2025, The AROS Development Team. All rights reserved.
 
 import os
-from html import *
-from ConfigParser import ConfigParser
+import jinja2
+from configparser import ConfigParser
 
 def makePicture( path, description, language ):
     LANG_DIR   = 'targets/www/template/languages'
@@ -15,27 +13,22 @@ def makePicture( path, description, language ):
         root = '../../../'
 
     config = ConfigParser()
-    config.read( os.path.join( LANG_DIR, language ) )
+    with open(os.path.join( LANG_DIR, language + '.txt' ), 'rb') as configfile:
+        config.read(configfile)
 
     filename  = os.path.basename( path )
     directory = os.path.dirname( path )
     thumbnail = root + os.path.join( directory, 'thumbnails', filename )
     path      = root + path
 
-    result = Div \
-    ( \
-        CLASS = "gallery",
-        contents = \
-        ( \
-            [ \
-                A \
-                ( \
-                    href = path,
-                    contents = Img( src = thumbnail),
-                ),
-                Div( contents = description, CLASS = "gallerydesc"),
-            ]
-        ),
-    )
-    
+    environment = jinja2.Environment()
+    result = environment.from_string('''
+<div class="gallery">
+    <a href="{{ path }}">
+        <img src="{{ thumbnail }}">
+    </a>
+    <div class="gallerydesc">{{ description }}</div>
+</div>
+''').render( thumbnail=thumbnail, path=path, description=description )
+
     return str( result )

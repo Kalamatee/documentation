@@ -1,1 +1,0 @@
-Je kunt het draaien in één groot venster.

@@ -1,7 +1,5 @@
-# Author: David Goodger
-# Contact: goodger@users.sourceforge.net
-# Revision: $Revision$
-# Date: $Date$
+# $Id: tableparser.py 9038 2022-03-05 23:31:46Z milde $
+# Author: David Goodger <goodger@python.org>
 # Copyright: This module has been placed in the public domain.
 
 """
@@ -25,9 +23,21 @@ __docformat__ = 'reStructuredText'
 import re
 import sys
 from docutils import DataError
+from docutils.utils import strip_combining_chars
 
 
-class TableMarkupError(DataError): pass
+class TableMarkupError(DataError):
+
+    """
+    Raise if there is any problem with table markup.
+
+    The keyword argument `offset` denotes the offset of the problem
+    from the table's start line.
+    """
+
+    def __init__(self, *args, **kwargs):
+        self.offset = kwargs.pop('offset', 0)
+        DataError.__init__(self, *args)
 
 
 class TableParser:
@@ -55,8 +65,7 @@ class TableParser:
         self.setup(block)
         self.find_head_body_sep()
         self.parse_table()
-        structure = self.structure_from_cells()
-        return structure
+        return self.structure_from_cells()
 
     def find_head_body_sep(self):
         """Look for a head/body row separator line; store the line index."""
@@ -65,16 +74,17 @@ class TableParser:
             if self.head_body_separator_pat.match(line):
                 if self.head_body_sep:
                     raise TableMarkupError(
-                        'Multiple head/body row separators in table (at line '
-                        'offset %s and %s); only one allowed.'
-                        % (self.head_body_sep, i))
+                        'Multiple head/body row separators '
+                        '(table lines %s and %s); only one allowed.'
+                        % (self.head_body_sep+1, i+1), offset=i)
                 else:
                     self.head_body_sep = i
                     self.block[i] = line.replace('=', '-')
         if self.head_body_sep == 0 or self.head_body_sep == (len(self.block)
                                                              - 1):
             raise TableMarkupError('The head/body row separator may not be '
-                                   'the first or last line of the table.')
+                                   'the first or last line of the table.',
+                                   offset=i)
 
 
 class GridTableParser(TableParser):
@@ -159,8 +169,9 @@ class GridTableParser(TableParser):
         corners = [(0, 0)]
         while corners:
             top, left = corners.pop(0)
-            if top == self.bottom or left == self.right \
-                  or top <= self.done[left]:
+            if (top == self.bottom
+                or left == self.right
+                or top <= self.done[left]):
                 continue
             result = self.scan_cell(top, left)
             if not result:
@@ -192,14 +203,13 @@ class GridTableParser(TableParser):
         last = self.bottom - 1
         for col in range(self.right):
             if self.done[col] != last:
-                return None
-        return 1
+                return False
+        return True
 
     def scan_cell(self, top, left):
         """Starting at the top-left corner, start tracing out a cell."""
         assert self.block[top][left] == '+'
-        result = self.scan_right(top, left)
-        return result
+        return self.scan_right(top, left)
 
     def scan_right(self, top, left):
         """
@@ -275,18 +285,16 @@ class GridTableParser(TableParser):
         From the data collected by `scan_cell()`, convert to the final data
         structure.
         """
-        rowseps = self.rowseps.keys()   # list of row boundaries
-        rowseps.sort()
+        rowseps = sorted(self.rowseps.keys())   # list of row boundaries
         rowindex = {}
         for i in range(len(rowseps)):
             rowindex[rowseps[i]] = i    # row boundary -> row number mapping
-        colseps = self.colseps.keys()   # list of column boundaries
-        colseps.sort()
+        colseps = sorted(self.colseps.keys())   # list of column boundaries
         colindex = {}
         for i in range(len(colseps)):
             colindex[colseps[i]] = i    # column boundary -> col number map
         colspecs = [(colseps[i] - colseps[i - 1] - 1)
-                    for i in range(1, len(colseps))] # list of column widths
+                    for i in range(1, len(colseps))]  # list of column widths
         # prepare an empty table with the correct number of rows & columns
         onerow = [None for i in range(len(colseps) - 1)]
         rows = [onerow[:] for i in range(len(rowseps) - 1)]
@@ -311,7 +319,7 @@ class GridTableParser(TableParser):
         else:
             headrows = []
             bodyrows = rows
-        return (colspecs, headrows, bodyrows)
+        return colspecs, headrows, bodyrows
 
 
 class SimpleTableParser(TableParser):
@@ -416,7 +424,7 @@ class SimpleTableParser(TableParser):
         """
         cols = []
         end = 0
-        while 1:
+        while True:
             begin = line.find('-', end)
             end = line.find(' ', begin)
             if begin < 0:
@@ -426,8 +434,9 @@ class SimpleTableParser(TableParser):
             cols.append((begin, end))
         if self.columns:
             if cols[-1][1] != self.border_end:
-                raise TableMarkupError('Column span incomplete at line '
-                                       'offset %s.' % offset)
+                raise TableMarkupError('Column span incomplete in table '
+                                       'line %s.' % (offset+1),
+                                       offset=offset)
             # Allow for an unbounded rightmost column:
             cols[-1] = (cols[-1][0], self.columns[-1][1])
         return cols
@@ -443,8 +452,9 @@ class SimpleTableParser(TableParser):
                     i += 1
                     morecols += 1
             except (AssertionError, IndexError):
-                raise TableMarkupError('Column span alignment problem at '
-                                       'line offset %s.' % (offset + 1))
+                raise TableMarkupError('Column span alignment problem '
+                                       'in table line %s.' % (offset+2),
+                                       offset=offset+1)
             cells.append([0, morecols, offset, []])
             i += 1
         return cells
@@ -456,17 +466,15 @@ class SimpleTableParser(TableParser):
         The row is parsed according to the current column spec (either
         `spanline` if provided or `self.columns`).  For each column, extract
         text from each line, and check for text in column margins.  Finally,
-        adjust for insigificant whitespace.
+        adjust for insignificant whitespace.
         """
         if not (lines or spanline):
             # No new row, just blank lines.
             return
         if spanline:
             columns = self.parse_columns(*spanline)
-            span_offset = spanline[1]
         else:
             columns = self.columns[:]
-            span_offset = start
         self.check_columns(lines, start, columns)
         row = self.init_row(columns, start)
         for i in range(len(columns)):
@@ -485,8 +493,11 @@ class SimpleTableParser(TableParser):
         """
         # "Infinite" value for a dummy last column's beginning, used to
         # check for text overflow:
-        columns.append((sys.maxint, None))
+        columns.append((sys.maxsize, None))
         lastcol = len(columns) - 2
+        # combining characters do not contribute to the column width
+        lines = [strip_combining_chars(line) for line in lines]
+
         for i in range(len(columns) - 1):
             start, end = columns[i]
             nextstart = columns[i+1][0]
@@ -495,13 +506,14 @@ class SimpleTableParser(TableParser):
                 if i == lastcol and line[end:].strip():
                     text = line[start:].rstrip()
                     new_end = start + len(text)
-                    columns[i] = (start, new_end)
                     main_start, main_end = self.columns[-1]
+                    columns[i] = (start, max(main_end, new_end))
                     if new_end > main_end:
                         self.columns[-1] = (main_start, new_end)
                 elif line[end:nextstart].strip():
-                    raise TableMarkupError('Text in column margin at line '
-                                           'offset %s.' % (first_line + offset))
+                    raise TableMarkupError('Text in column margin in table '
+                                           'line %s.' % (first_line+offset+1),
+                                           offset=first_line+offset)
                 offset += 1
         columns.pop()
 
